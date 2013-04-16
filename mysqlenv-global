@@ -1,0 +1,17 @@
+#!/bin/bash -x
+
+usage(){
+  cat <<EOS
+Usage: mysqlenv global <version>
+EOS
+  exit $1
+}
+
+[ -z $1 ] && usage 1
+
+if [ -d ${MYSQLENV_VERSION_INSTALL_DIR}/$1 ]; then
+  echo $1 > $VERSION_FILE
+  sh mysqlenv-init
+else
+  echo "mysqlenv: $MYSQL_VERSION not installed."
+fi

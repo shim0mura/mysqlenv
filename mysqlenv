@@ -1,0 +1,58 @@
+#!/bin/bash -x
+
+shopt -s nullglob
+
+if [ -z ${MYSQLENV_ROOT} ]; then
+  MYSQLENV_ROOT=${HOME}/.mysqlenv
+else
+  MYSQLENV_ROOT=${MYSQLENV_ROOT%/}
+fi
+
+export MYSQLENV_ROOT
+
+VERSION_FILE=$MYSQLENV_ROOT/version
+export VERSION_FILE
+
+if [ -z ${MYSQLENV_VERSION_INSTALL_DIR} ]; then
+  MYSQLENV_VERSION_INSTALL_DIR=${MYSQLENV_ROOT}/versions
+else
+  MYSQLENV_VERSION_INSTALL_DIR=${MYSQLENV_VERSION_INSTALL_DIR%/}
+fi
+export MYSQLENV_VERSION_INSTALL_DIR
+
+if [ -z ${MYSQLBUILD_PATH} ]; then
+  MYSQLBUILD_PATH=${MYSQLENV_ROOT}/mysql-build/bin
+else
+  MYSQLBUILD_PATH=${MYSQLBUILD_PATH%/}
+fi
+export MYSQLBUILD_PATH
+
+while getopts "a" opt
+do
+  case $opt in
+    a | all) FLAG_ALL=1
+  esac
+done
+
+shift $((OPTIND-1))
+command="$1"
+
+case "$command" in
+#"" | "-h" | "--help" )
+#  echo -e "$(mysqlenv--version)\n$(mysqlenv-help)" >&2
+#  ;;
+#"-v" )
+#  exec mysqlenv-version
+#  ;;
+* )
+  command_path="$(command -v "./mysqlenv-$command" || true)"
+  if [ -z "$command_path" ]; then
+    echo "mysqlenv: no such command \n `$command`" >&2
+    exit 1
+  fi
+
+  shift 1
+  exec "$command_path" "$@"
+  ;;
+esac
+

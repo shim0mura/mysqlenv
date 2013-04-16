@@ -1,0 +1,17 @@
+#!/bin/bash -x
+
+if [ ! -f $VERSION_FILE ]; then
+  cat <<EOS
+mysqlenv: Version file doesn't exist
+Try 'mysqlenv global <version>' and set MySQL version.
+EOS
+  exit 1
+fi
+
+MYSQL_VERSION=$(cat ${VERSION_FILE})
+
+if [ -d ${MYSQLENV_VERSION_INSTALL_DIR}/${MYSQL_VERSION} ]; then
+  echo $MYSQL_VERSION
+else
+  echo "mysqlenv: $MYSQL_VERSION not installed."
+fi

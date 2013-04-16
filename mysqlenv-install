@@ -1,0 +1,67 @@
+#!/bin/bash
+
+cleanup() {
+  [ -z "${VERSION_EXISTS}" ] && rm -rf $PREFIX/$VERSION
+  exit 1
+}
+
+usage(){
+  cat <<EOS
+Usage: mysqlenv install <version>
+       mysqlenv install -l
+
+  -l   List all available versions
+EOS
+  exit $1
+}
+
+trap cleanup SIGINT
+
+if [ -z $1 ]; then
+  usage 1
+else
+  VERSION="${1##*/}"
+fi
+
+PREFIX=${MYSQLENV_VERSION_INSTALL_DIR}
+[ -d ${PREFIX}/${VERSION} ] && echo "mysqlenv: version already installed" && exit 1
+
+for ver in $(${MYSQLBUILD_PATH}/bin/mysql-build --definitions | grep ${VERSION}); do
+  [ $ver = $VERSION ] && VERSION_EXISTS=1
+done
+
+if [ -z $VERSION_EXISTS ]; then
+  echo "mysqlenv: no such version of MySQL doesn't exists => ${VERSION}"
+  echo "check the available versions."
+  echo $(${MYSQLBUILD_PATH}/bin/mysql-build --definitions)
+  exit 1
+fi
+
+mkdir -p ${PREFIX}/${VERSION}
+${MYSQLBUILD_PATH}/bin/mysql-build ${VERSION} ${PREFIX}/${VERSION}
+STATUS=$?
+
+if [ $STATUS == 0 ]; then
+  mkdir -p ${MYSQLENV_ROOT}/opts/log/${VERSION}
+  mkdir -p ${MYSQLENV_ROOT}/opts/data/${VERSION}
+  mkdir -p ${MYSQLENV_ROOT}/opts/socket/${VERSION}
+
+  find ${PREFIX}/${VERSION}/ -name "my-medium.cnf" | xargs -i cp -p {} ${PREFIX}/${VERSION}/my.cnf
+  cat >> ${PREFIX}/${VERSION}/my.cnf << EOS
+[mysqld_safe]
+log-error=${MYSQLENV_ROOT}/opts/log/${VERSION}/mysqld.err
+datadir=${MYSQLENV_ROOT}/opts/data/${VERSION}
+socket=${MYSQLENV_ROOT}/opts/socket/${VERSION}/mysqld.sock
+EOS
+
+  START_SCRIPT=$(find ${PREFIX}/${VERSION}/ -name "mysql.server")
+  sed -i "s/^basedir=/basedir=${PREFIX//\//\\/}\/${VERSION}/" $START_SCRIPT
+  sed -i "s/^datadir=/datadir=${MYSQLENV_ROOT//\//\\/}\/opts\/data\/${VERSION}/" $START_SCRIPT
+
+  cd ${PREFIX}/${VERSION}/bin/
+  mysql_install_db --datadir=${MYSQLENV_ROOT}/opts/data/${VERSION} --user=$(whoami) > /dev/null
+  cd -
+  echo "mysqlenv: version ${VERSION} install complete"
+else
+  cleanup
+fi

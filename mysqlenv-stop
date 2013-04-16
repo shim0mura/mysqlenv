@@ -1,0 +1,36 @@
+#!/bin/bash
+
+usage(){
+  cat <<EOS
+Usage: mysqlenv stop [version]
+EOS
+exit $1
+}
+
+if [ -z $FLAG_ALL]; then
+  for version_dir in $MYSQLENV_VERSION_INSTALL_DIR/*
+  do
+    version=$(basename $version_dir)
+    STOP_SCRIPT=$(find ${MYSQLENV_VERSION_INSTALL_DIR}/${version} -name "mysql.server")
+    $STOP_SCRIPT stop
+  done
+else
+  if [ -z $1 ]; then
+    VERSION=$(sh mysqlenv-version)
+  else
+    VERSION=$1
+  fi
+
+  if [ -z $VERSION ]; then
+    echo "mysqlenv: version not specified. install and set mysql global use version."
+    usage 1
+  fi
+
+  if [ ! -d ${MYSQLENV_VERSION_INSTALL_DIR}/${VERSION} ]; then
+    echo "mysqlenv: version $VERSION not installed."
+    usage 1
+  fi
+
+  STOP_SCRIPT=$(find ${MYSQLENV_VERSION_INSTALL_DIR}/${VERSION} -name "mysql.server")
+  $STOP_SCRIPT stop
+fi
