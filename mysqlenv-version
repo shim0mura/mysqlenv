@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 
 if [ ! -f $VERSION_FILE ]; then
   cat <<EOS
