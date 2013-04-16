@@ -1,7 +1,7 @@
 #!/bin/bash
 
 cleanup() {
-  [ -z "${VERSION_EXISTS}" ] && rm -rf $PREFIX/$VERSION
+  rm -rf $PREFIX/$VERSION
   exit 1
 }
 
@@ -16,6 +16,7 @@ EOS
 }
 
 trap cleanup SIGINT
+trap cleanup EXIT
 
 if [ -z $1 ]; then
   usage 1

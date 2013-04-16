@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ ! -d ${MYSQLENV_VERSION_INSTALL_DIR} ]; then
-  mkdir ${MYSQLENV_VERSION_INSTALL_DIR}
+  mkdir -p ${MYSQLENV_VERSION_INSTALL_DIR}
 fi
 
 if [ -f ${VERSION_FILE} -a -d ${MYSQLENV_VERSION_INSTALL_DIR}/$(cat ${VERSION_FILE}) ]; then
