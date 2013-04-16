@@ -1,0 +1,3 @@
+[submodule "mysql-build"]
+	path = mysql-build
+	url = git@github.com:shim0mura/mysql-build.git
