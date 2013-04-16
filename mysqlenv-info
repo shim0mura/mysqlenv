@@ -1,0 +1,28 @@
+#!/bin/bash
+
+usage(){
+  cat <<EOS
+Usage: mysqlenv info [version]
+EOS
+  exit $1
+}
+
+if [ -z $1 ]; then
+  VERSION=$(mysqlenv-version)
+else
+  VERSION=$1
+fi
+
+if [ -z $VERSION ]; then
+  echo "mysqlenv: version not specified. install and set mysql global use version."
+  usage 1
+fi
+
+if [ ! -d ${MYSQLENV_VERSION_INSTALL_DIR}/${VERSION} ]; then
+  echo "mysqlenv: version $VERSION not installed."
+  usage 1
+fi
+
+echo "version:     ${VERSION}"
+echo "conf:        ${MYSQLENV_VERSION_INSTALL_DIR}/${VERSION}/my.cnf"
+echo "socket path: ${MYSQLENV_ROOT}/opts/socket/${VERSION}/mysql.sock"
