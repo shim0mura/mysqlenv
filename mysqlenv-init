@@ -1,12 +1,16 @@
 #!/bin/bash
 
+if [ ! -f $MYSQLBUILD_PATH/bin/mysql-build ]; then
+  $(cd `dirname $0` && git submodule init && git submodule update)
+fi
+
 if [ ! -d ${MYSQLENV_VERSION_INSTALL_DIR} ]; then
   mkdir -p ${MYSQLENV_VERSION_INSTALL_DIR}
 fi
 
-if [ -f ${VERSION_FILE} -a -d ${MYSQLENV_VERSION_INSTALL_DIR}/$(cat ${VERSION_FILE}) ]; then
-  PATH=${PATH}:${MYSQLENV_VERSION_INSTALL_DIR}/$(cat ${VERSION_FILE})/bin
-  export PATH=${PATH}
-else
-  echo "version not specified" >&2 
+if [ -f ${VERSION_FILE} ]; then
+  if [ -d ${MYSQLENV_VERSION_INSTALL_DIR}/$(cat ${VERSION_FILE}) ]; then
+    PATH=${PATH}:${MYSQLENV_VERSION_INSTALL_DIR}/$(cat ${VERSION_FILE})/bin
+    export PATH=$PATH
+  fi
 fi

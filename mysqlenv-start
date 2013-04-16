@@ -7,7 +7,7 @@ EOS
   exit $1
 }
 
-if [ -z $FLAG_ALL]; then
+if [ -n $FLAG_ALL]; then
   for version_dir in $MYSQLENV_VERSION_INSTALL_DIR/*
   do
     version=$(basename $version_dir)
@@ -16,7 +16,7 @@ if [ -z $FLAG_ALL]; then
   done
 else
   if [ -z $1 ]; then
-    VERSION=$(sh mysqlenv-version)
+    VERSION=$(mysqlenv-version)
   else
     VERSION=$1
   fi

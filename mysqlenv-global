@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 
 usage(){
   cat <<EOS
@@ -11,7 +11,7 @@ EOS
 
 if [ -d ${MYSQLENV_VERSION_INSTALL_DIR}/$1 ]; then
   echo $1 > $VERSION_FILE
-  sh mysqlenv-init
+  mysqlenv-init
 else
   echo "mysqlenv: $MYSQL_VERSION not installed."
 fi

@@ -1,7 +1,13 @@
 #!/bin/bash
 
+set -e
+
 cleanup() {
   rm -rf $PREFIX/$VERSION
+  rm -rf ${MYSQLENV_ROOT}/opts/log/${VERSION}
+  rm -rf ${MYSQLENV_ROOT}/opts/data/${VERSION}
+  rm -rf ${MYSQLENV_ROOT}/opts/socket/${VERSION}
+  echo "install failed"
   exit 1
 }
 
@@ -16,7 +22,12 @@ EOS
 }
 
 trap cleanup SIGINT
-trap cleanup EXIT
+trap cleanup ERR
+
+if [ -n $FLAG_LIST ]; then
+  ${MYSQLBUILD_PATH}/bin/mysql-build 
+  exit 0
+fi
 
 if [ -z $1 ]; then
   usage 1
