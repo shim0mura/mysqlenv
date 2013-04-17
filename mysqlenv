@@ -25,17 +25,29 @@ if [ -z ${MYSQLBUILD_PATH} ]; then
 fi
 export MYSQLBUILD_PATH
 
-while getopts "a" opt
+while getopts "al" opt
 do
   case $opt in
-    a | all) FLAG_ALL="1"
-             ;;
-    l | list) FLAG_LIST="1"
-             ;;
+    a)
+      export FLAG_ALL="1"
+      ;;
+    l)
+      export FLAG_LIST="1"
+      ;;
   esac
 done
 
-shift $((OPTIND-1))
+
+
+if [ "$FLAG_ALL" = "1" ]; then
+    echo "Option -x specified."
+fi
+ 
+if [ "$FLAG_LIST" = "1" ]; then
+    echo "Option -y $VALUE_Y specified."
+fi
+
+shift `expr $OPTIND - 1`
 command="$1"
 
 case "$command" in

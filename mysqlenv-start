@@ -7,7 +7,8 @@ EOS
   exit $1
 }
 
-if [ -n $FLAG_ALL]; then
+if [ "$FLAG_ALL" = "1" ]; then
+  [ -z ${#versions[*]} ] && echo "versions not installed" && exit 1
   for version_dir in $MYSQLENV_VERSION_INSTALL_DIR/*
   do
     version=$(basename $version_dir)
@@ -16,14 +17,14 @@ if [ -n $FLAG_ALL]; then
   done
 else
   if [ -z $1 ]; then
-    VERSION=$(mysqlenv-version)
+    if [ -f ${VERSION_FILE} ]; then
+      VERSION=$(mysqlenv-version)
+    else
+      echo "mysqlenv: version not specified. install and set mysql global use version."
+      usage 1
+    fi
   else
     VERSION=$1
-  fi
-
-  if [ -z $VERSION ]; then
-    echo "mysqlenv: version not specified. install and set mysql global use version."
-    usage 1
   fi
 
   if [ ! -d ${MYSQLENV_VERSION_INSTALL_DIR}/${VERSION} ]; then

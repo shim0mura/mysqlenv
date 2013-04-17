@@ -24,8 +24,9 @@ EOS
 trap cleanup SIGINT
 trap cleanup ERR
 
-if [ -n $FLAG_LIST ]; then
-  ${MYSQLBUILD_PATH}/bin/mysql-build 
+if [ "$FLAG_LIST" = "1" ]; then
+  echo "availabel versions"
+  ${MYSQLBUILD_PATH}/bin/mysql-build --definitions
   exit 0
 fi
 
