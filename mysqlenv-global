@@ -2,10 +2,10 @@
 
 usage(){
   echo "Usage: mysqlenv global <version>" >&2
-  exit $1
+  exit 1
 }
 
-[ -z $1 ] && usage 1
+[ -z $1 ] && usage
 
 if [ -d ${MYSQLENV_VERSION_INSTALL_DIR}/$1 ]; then
   echo $1 > $VERSION_FILE

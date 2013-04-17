@@ -18,7 +18,8 @@ mysqlenv() {
 
   case \$command in
     global)
-      eval \`mysqlenv global \$@\` ;;
+      eval "\`mysqlenv sh-global \$@\`"
+      ;;
     *) command mysqlenv \$command \$@ ;;
   esac
 }

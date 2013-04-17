@@ -37,16 +37,6 @@ do
   esac
 done
 
-
-
-if [ "$FLAG_ALL" = "1" ]; then
-    echo "Option -x specified."
-fi
- 
-if [ "$FLAG_LIST" = "1" ]; then
-    echo "Option -y $VALUE_Y specified."
-fi
-
 shift `expr $OPTIND - 1`
 command="$1"
 
