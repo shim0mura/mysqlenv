@@ -71,8 +71,12 @@ EOS
   sed -i "s/^basedir=/basedir=${PREFIX//\//\\/}\/${VERSION}/" $START_SCRIPT
   sed -i "s/^datadir=/datadir=${MYSQLENV_ROOT//\//\\/}\/opts\/data\/${VERSION}/" $START_SCRIPT
 
-  cd ${PREFIX}/${VERSION}/bin/
-  mysql_install_db --datadir=${MYSQLENV_ROOT}/opts/data/${VERSION} --user=$(whoami) > /dev/null
+  cd ${PREFIX}/${VERSION}
+  ./scripts/mysql_install_db \
+    --user=$(whoami) \
+    --basedir=$(pwd) \
+    --datadir=${MYSQLENV_ROOT}/opts/data/${VERSION} \
+    ;
   cd -
   echo "mysqlenv: version ${VERSION} install complete"
 else
