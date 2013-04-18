@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ ! -f $MYSQLBUILD_PATH/bin/mysql-build ]; then
-  $(cd `dirname $0` && git submodule init && git submodule update)
+  (cd `dirname $0` && git submodule init && git submodule update)
 fi
 
 if [ ! -d ${MYSQLENV_VERSION_INSTALL_DIR} ]; then
